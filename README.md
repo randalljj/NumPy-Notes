@@ -11,5 +11,3 @@ mybinder.org which automates the process.
 It says to add the following lines for a badge.
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/randalljj/NumPy-Notes/HEAD)
-.. image:: https://mybinder.org/badge_logo.svg
- :target: https://mybinder.org/v2/gh/randalljj/NumPy-Notes/HEAD
