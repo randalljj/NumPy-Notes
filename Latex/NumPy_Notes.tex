@@ -1,0 +1,1804 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{NumPy\_Notes}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{numpy-notes}{%
+\section{NumPy Notes}\label{numpy-notes}}
+
+\hypertarget{author-jesse-randall}{%
+\subsubsection{Author: Jesse Randall}\label{author-jesse-randall}}
+
+\hypertarget{date-20012022}{%
+\subsubsection{Date: 20/01/2022}\label{date-20012022}}
+
+    \hypertarget{preface}{%
+\subsection{Preface}\label{preface}}
+This notebook is meant for people who are familiar with the base
+functionality (syntax, methods, libraries, etc.) of Python and are
+looking to learn or review the contents of the NumPy library.
+    \hypertarget{changelog}{%
+\subsubsection{Changelog}\label{changelog}}
+
+    \hypertarget{always-look-at-the-documentation}{%
+\paragraph{25/01/2022: Always look at the
+documentation!}\label{always-look-at-the-documentation}}
+25/01/2022: Always look at the documentation!
+
+I used string concatenation in the print statements to make one input from multiple strings becuase using multiple comma separated inputs resulted in misaligned statements for the output. 
+
+Example: Misaligned output with comma separated inputs.
+
+Input: print('Hello. My name is Jesse. {\textbackslash}n', 
+             'The output of this line is NOT aligned with the output of the first line.')
+                 
+Output: Hello. My name is Jesse.
+         The output of this line is NOT aligned with the output of the first line.
+         
+Example: Aligned output with concatenated inputs.
+
+Input: print('Hello. My name is Jesse. {\textbackslash}n' +
+             'The output of this line IS aligned with the output of the first line.')
+                 
+Output: Hello. My name is Jesse.
+        The output of this line IS aligned with the output of the first line.
+         
+This was a workaround I found through some light experimentation. However, I found that my original method of string concatenation using the '+' operator is of O(N{\textasciicircum}2) complexity in Python, where N is the number of characters in each string, because strings are immutable meaning they cannot be changed. Every time string concatenation is performed using the '+' operator, a new string is made resulting in the minimum O(N{\textasciicircum}2) complexity if all strings are of the same size. 
+
+I replaced string concatenation using the '+' operator with the str.join() method which takes a list of the strings that are going to be concatenated. This method creates exactly one string to contain the list of strings provided meaning it is O(N) complexity which is significantly more efficient. 
+
+Again this was just a workaround where I did not bother to understand why the print() function has this behavior. What I should have done was look at the documentation for the print() function. I finally did look at the documentation and found a keyword argument called 'sep' that defines the character used to separate multiple inputs to the print() function. By default it is a single space and this is why the outputs were misaligned. I changed it to an empty string and the problem went away WITHOUT the need of string concatenation which simplifies the complexity of the code by removing an unnecessary step.
+
+Example: Aligned output using multiple inputs with sep=''.
+
+Input: >>> print('Hello. My name is Jesse. {\textbackslash}n',
+                 'The output of this line IS aligned with the output of the first line.', sep='')
+                 
+Output: Hello. My name is Jesse.
+        The output of this line IS aligned with the output of the first line.
+
+This is meant to be a beginner guide to NumPy and I do not want to demonstrate inefficient coding practice. Newer programmers will use this as an example of what 'good' coding looks like so I want to make sure that I demonstrate efficient coding practice throughout.
+    \hypertarget{introducing-jupyter-notebook}{%
+\paragraph{02/02/2022: Introducing Jupyter
+Notebook}\label{introducing-jupyter-notebook}}
+Created a section at the beginning to teach people how to use a Jupyter Notebook.
+    \hypertarget{how-to-use-a-jupyter-notebook}{%
+\subsection{How to use a Jupyter
+Notebook}\label{how-to-use-a-jupyter-notebook}}
+This is a Jupyter Notebook detailing how to use the NumPy package for Python. This section covers how to use a Jupyter Notebook for people who are not familiar. 
+
+Each selected "cell" or block of text/code is run through an interactive Python (iPython) kernel when you use the keyboard command "Shit+Enter". You can select a cell by clicking inside the box containing the text/code or by clicking to the left side of the cell. A cell is selected when is has a rectangular bar to the left of the cell, it is colored blue by default. 
+
+Cells that contain code to be run will have the closed brackets on the left of the cell that look like this "[ ]". A cell has been run when you see a number inside the corresponding brackets for the cell and the number corresponds to how many cells of code have been run so far. Re-running a cell or running a new cell will increment the number. There will usually be a printed output beneath a cell that contains code. Try running the simple print statement below using the "Shift+Enter" command when you have the cell selected.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Hello, World!}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Hello, World!
+    \end{Verbatim}
+You can go through each cell individually with the "Shift+Enter" method of running a cell. Make sure you start from the beginning by selecting the first cell in the sequence of code, otherwise the code will not work and there will be printed errors in the output signifying that. The notebook will automatically select the next cell after running the selected cell so you can easily run each cell in the sequence by repeatedly using the "Shift+Enter" command. To run all cells at once, click on the "Run" tab in the top left and click the option "Run All Cells". All cells in the entire notebook will be run and you can scroll through the notebook to see the output for each cell containing code. 
+
+You can reset the current Kernel by selecting the "Kernel" tab in the top left and selecting the "Restart Kernel and Clear All Outputs" option. This will remove all currently defined functions and variables effectively resetting the notebook back to its base state.
+
+The notebook may have already been run when you receive it. This is easily determined by looking at the brackets beside each cell. If there is a number inside each input cell with code, then the notebook has been fully executed and the associated output for each cell should be printed.
+    \hypertarget{import-numpy}{%
+\subsection{Import NumPy}\label{import-numpy}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Import NumPy using abreviation \PYZsq{}np\PYZsq{} for easier typing. Standard shorthand. Also}
+\PY{c+c1}{\PYZsh{} import other useful libraries that will be used.}
+
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np} \PY{c+c1}{\PYZsh{} NumPy library. Used to instantiate arrays and perform array operations.}
+\PY{k+kn}{import} \PY{n+nn}{traceback}   \PY{c+c1}{\PYZsh{} Traceback library. Used to print the call stack when an error occurs.}
+
+\PY{c+c1}{\PYZsh{} This statement shortens the printed float numbers for easier reading.}
+\PY{n}{np}\PY{o}{.}\PY{n}{set\PYZus{}printoptions}\PY{p}{(}\PY{n}{formatter}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}0:0.3f\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Initializizng variables for NumPy array dimensions and general use.}
+\PY{n}{N1} \PY{o}{=} \PY{l+m+mi}{5}        \PY{c+c1}{\PYZsh{} Size of NumPy array dimension 1.}
+\PY{n}{N2} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{l+m+mf}{1e1}\PY{p}{)} \PY{c+c1}{\PYZsh{} Size of NumPy array dimension 2. }
+\PY{n}{N3} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{l+m+mf}{1e1}\PY{p}{)} \PY{c+c1}{\PYZsh{} Size of NumPy array dimension 3.}
+\PY{n}{NL} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}     \PY{c+c1}{\PYZsh{} New line or return. Makes coding print statements simpler.}
+\PY{n}{LS} \PY{o}{=} \PY{l+m+mi}{2}        \PY{c+c1}{\PYZsh{} Number of \PYZsq{}newline\PYZsq{} or \PYZsq{}return\PYZsq{} commands used when printing. }
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{initialization-of-numpy-arrays}{%
+\subsection{Initialization of NumPy
+Arrays}\label{initialization-of-numpy-arrays}}
+Initialization and properties of NumPy arrays. Example np.random.random{\textunderscore}sample. Standard function for initiating an array of random values in the interval [0,1). Takes a tuple to define the shape or size of each dimension for the array. 
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Initialization. Different intialization for different array types. Check documentation.}
+\PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{random\PYZus{}sample}\PY{p}{(} \PY{p}{(}\PY{n}{N1}\PY{p}{,}\PY{n}{N2}\PY{p}{,}\PY{n}{N3}\PY{p}{)} \PY{p}{)} 
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The NumPy array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{a}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The NumPy array "a":
+[[[0.345 0.037 0.804 0.180 0.355 0.121 0.544 0.936 0.830 0.916]
+  [0.077 0.964 0.317 0.793 0.491 0.776 0.450 0.322 0.482 0.826]
+  [0.548 0.907 0.787 0.338 0.654 0.017 0.726 0.563 0.694 0.095]
+  [0.081 0.273 0.865 0.577 0.544 0.418 0.156 0.914 0.764 0.910]
+  [0.344 0.359 0.568 0.763 0.963 0.766 0.901 0.263 0.031 0.880]
+  [0.149 0.973 0.474 0.482 0.826 0.154 0.103 0.600 0.594 0.796]
+  [0.848 0.317 0.417 0.617 0.499 0.840 0.636 0.218 0.675 0.985]
+  [0.415 0.568 0.672 0.240 0.364 0.158 0.547 0.442 0.707 0.122]
+  [0.846 0.096 0.712 0.450 0.105 0.236 0.035 0.112 0.743 0.082]
+  [0.338 0.213 0.936 0.136 0.617 0.773 0.030 0.831 0.427 0.583]]
+
+ [[0.759 0.780 0.940 0.786 0.785 0.063 0.719 0.611 0.343 0.651]
+  [0.712 0.492 0.416 0.086 0.849 0.327 0.066 0.365 0.022 0.750]
+  [0.107 0.421 0.121 0.058 0.831 0.829 0.042 0.849 0.712 0.198]
+  [0.840 0.781 0.938 0.564 0.625 0.324 0.827 0.787 0.860 0.730]
+  [0.259 0.710 0.250 0.885 0.557 0.314 0.434 0.789 0.147 0.203]
+  [0.776 0.795 0.491 0.279 0.455 0.537 0.230 0.855 0.504 0.319]
+  [0.416 0.647 0.398 0.319 0.569 0.768 0.138 0.461 0.331 0.681]
+  [0.564 0.070 0.512 0.182 0.592 0.052 0.993 0.516 0.995 0.872]
+  [0.653 0.422 0.850 0.171 0.190 0.770 0.996 0.209 0.882 0.686]
+  [0.989 0.340 0.134 0.363 0.761 0.596 0.396 0.510 0.159 0.384]]
+
+ [[0.194 0.480 0.143 0.614 0.996 0.011 0.800 0.427 0.652 0.871]
+  [0.852 0.406 0.760 0.745 0.712 0.143 0.711 0.789 0.490 0.275]
+  [0.508 0.841 0.169 0.201 0.138 0.495 0.858 0.928 0.525 0.146]
+  [0.613 0.772 0.064 0.697 0.832 0.707 0.930 0.447 0.528 0.721]
+  [0.111 0.393 0.741 0.519 0.644 0.505 0.031 0.093 0.969 0.622]
+  [0.105 0.077 0.085 0.132 0.055 0.800 0.751 0.371 0.961 0.206]
+  [0.892 0.177 0.055 0.777 0.340 0.715 0.759 0.263 0.657 0.873]
+  [0.323 0.379 0.006 0.024 0.530 0.088 0.717 0.410 0.835 0.558]
+  [0.160 0.275 0.937 0.188 0.622 0.110 0.465 0.794 0.744 0.958]
+  [0.630 0.478 0.732 0.204 0.454 0.705 0.974 0.048 0.303 0.239]]
+
+ [[0.270 0.796 0.746 0.709 0.550 0.159 0.551 0.131 0.353 0.475]
+  [0.379 0.415 0.407 0.877 0.134 0.306 0.788 0.754 0.458 0.055]
+  [0.350 0.970 0.823 0.809 0.488 0.317 0.010 0.320 0.341 0.224]
+  [0.504 0.109 0.359 0.955 0.031 0.233 0.635 0.586 0.098 0.364]
+  [0.764 0.504 0.530 0.916 0.979 0.778 0.438 0.536 0.182 0.612]
+  [0.346 0.862 0.821 0.791 0.630 0.290 0.741 0.106 0.898 0.586]
+  [0.552 0.653 0.783 0.037 0.621 0.237 0.830 0.638 0.678 0.061]
+  [0.653 0.620 0.562 0.927 0.940 0.728 0.239 0.395 0.741 0.076]
+  [0.865 0.020 0.367 0.233 0.606 0.316 0.397 0.904 0.720 0.825]
+  [0.919 0.322 0.786 0.839 0.469 0.545 0.221 0.787 0.230 0.603]]
+
+ [[0.180 0.465 0.905 0.664 0.639 0.687 0.003 0.731 0.289 0.464]
+  [0.919 0.053 0.714 0.743 0.907 0.095 0.743 0.974 0.328 0.576]
+  [0.583 0.824 0.839 0.093 0.328 0.611 0.146 0.571 0.531 0.913]
+  [0.324 0.985 0.413 0.430 0.750 0.596 0.125 0.440 0.142 0.391]
+  [0.940 0.908 0.980 0.576 0.428 0.599 0.955 0.920 0.126 0.137]
+  [0.261 0.334 0.657 0.228 0.823 0.860 0.237 0.716 0.738 0.121]
+  [0.047 0.186 0.207 0.625 0.533 0.909 0.726 0.249 0.787 0.978]
+  [0.887 0.693 0.884 0.042 0.094 0.171 0.689 0.162 0.306 0.350]
+  [0.049 0.227 0.740 0.784 0.749 0.033 0.855 0.083 0.741 0.928]
+  [0.525 0.541 0.919 0.015 0.387 0.174 0.927 0.654 0.271 0.732]]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Properties of NumPy array \PYZdq{}a\PYZdq{}.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The data type for all elements: }\PY{l+s+s1}{\PYZsq{}}                \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{dtype}\PY{p}{)}    \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The size of each element in memory in bytes: }\PY{l+s+s1}{\PYZsq{}}   \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{itemsize}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The total number of elements: }\PY{l+s+s1}{\PYZsq{}}                  \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{size}\PY{p}{)}     \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The total number of dimensions: }\PY{l+s+s1}{\PYZsq{}}                \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{ndim}\PY{p}{)}     \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The shape or number of elements per dimension: }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{shape}\PY{p}{)}    \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The maximum value of contained elements: }\PY{l+s+s1}{\PYZsq{}}       \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{)}    \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{The minimum value of contained elements: }\PY{l+s+s1}{\PYZsq{}}       \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}\PY{p}{)}    \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The data type for all elements: float64
+The size of each element in memory in bytes: 8
+The total number of elements: 500
+The total number of dimensions: 3
+The shape or number of elements per dimension: (5, 10, 10)
+The maximum value of contained elements: 0.9959737977452803
+The minimum value of contained elements: 0.0028117880961360253
+
+    \end{Verbatim}
+
+    \hypertarget{indexingslicing-to-access-elements}{%
+\subsection{Indexing/Slicing to access
+elements}\label{indexingslicing-to-access-elements}}
+Indexing and Slicing to access elements. Uses "0 indexing" meaning first element of each dimension is referenced with number "0". Negative numbers start at the end of each dimension. The notation [start:stop:step] is known as a "slice" and can be used for granular control when indexing a specific axis.
+
+Reference: NumPy Documentation v1.22
+URL: https://numpy.org/doc/stable/user/basics.indexing.html 
+Quote: "All arrays generated by basic slicing are always views of the original array."
+Comment: A "view" is an array whose elements point to the corresponding elements in the indexed array. This is relevant later on when we learn about boolean array masking where we are manipulating the values of an array.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Get a specific element using a[d1,d2,...,dn] notation.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{First element(s): }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}  \PY{p}{,} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}  \PY{p}{,} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}   \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Last element(s):  }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+First element(s): (0.3451339077231168, 0.7587127651752653, 0.19407314287004906)
+Last element(s):  (0.5826849265377851, 0.38422577518608825, 0.23925693640750267)
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Get a specific \PYZsq{}row\PYZsq{}. \PYZsq{}:\PYZsq{} used to select all elements of specified dimension.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{First row(s): }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)}  \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Last row(s):  }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+First row(s):
+[0.345 0.037 0.804 0.180 0.355 0.121 0.544 0.936 0.830 0.916]
+
+Last row(s):
+[0.338 0.213 0.936 0.136 0.617 0.773 0.030 0.831 0.427 0.583]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Get a specific \PYZsq{}column\PYZsq{}.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{First column(s): }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}  \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Last column(s):  }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+First column(s):
+[0.345 0.077 0.548 0.081 0.344 0.149 0.848 0.415 0.846 0.338]
+
+Last column(s):
+[0.916 0.826 0.095 0.910 0.880 0.796 0.985 0.122 0.082 0.583]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Get a specific \PYZsq{}table\PYZsq{}.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{First table(s): }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)}  \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Last table(s):  }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+First table(s):
+[[0.345 0.037 0.804 0.180 0.355 0.121 0.544 0.936 0.830 0.916]
+ [0.077 0.964 0.317 0.793 0.491 0.776 0.450 0.322 0.482 0.826]
+ [0.548 0.907 0.787 0.338 0.654 0.017 0.726 0.563 0.694 0.095]
+ [0.081 0.273 0.865 0.577 0.544 0.418 0.156 0.914 0.764 0.910]
+ [0.344 0.359 0.568 0.763 0.963 0.766 0.901 0.263 0.031 0.880]
+ [0.149 0.973 0.474 0.482 0.826 0.154 0.103 0.600 0.594 0.796]
+ [0.848 0.317 0.417 0.617 0.499 0.840 0.636 0.218 0.675 0.985]
+ [0.415 0.568 0.672 0.240 0.364 0.158 0.547 0.442 0.707 0.122]
+ [0.846 0.096 0.712 0.450 0.105 0.236 0.035 0.112 0.743 0.082]
+ [0.338 0.213 0.936 0.136 0.617 0.773 0.030 0.831 0.427 0.583]]
+
+Last table(s):
+[[0.180 0.465 0.905 0.664 0.639 0.687 0.003 0.731 0.289 0.464]
+ [0.919 0.053 0.714 0.743 0.907 0.095 0.743 0.974 0.328 0.576]
+ [0.583 0.824 0.839 0.093 0.328 0.611 0.146 0.571 0.531 0.913]
+ [0.324 0.985 0.413 0.430 0.750 0.596 0.125 0.440 0.142 0.391]
+ [0.940 0.908 0.980 0.576 0.428 0.599 0.955 0.920 0.126 0.137]
+ [0.261 0.334 0.657 0.228 0.823 0.860 0.237 0.716 0.738 0.121]
+ [0.047 0.186 0.207 0.625 0.533 0.909 0.726 0.249 0.787 0.978]
+ [0.887 0.693 0.884 0.042 0.094 0.171 0.689 0.162 0.306 0.350]
+ [0.049 0.227 0.740 0.784 0.749 0.033 0.855 0.083 0.741 0.928]
+ [0.525 0.541 0.919 0.015 0.387 0.174 0.927 0.654 0.271 0.732]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Granular indexing or \PYZsq{}slicing\PYZsq{} using }
+\PY{c+c1}{\PYZsh{} a[d1=startindex:endindex:stepsize,d2,...,dn] notation.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{First row, every other element: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}  \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Last row, every other element:  }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+First row, every other element:
+[0.345 0.804 0.355 0.544 0.830]
+
+Last row, every other element:
+[0.338 0.936 0.617 0.030 0.427]
+
+    \end{Verbatim}
+
+    \hypertarget{more-initialization-examples}{%
+\subsection{More Initialization
+Examples}\label{more-initialization-examples}}
+
+    \hypertarget{basic-initialization}{%
+\subsubsection{Basic Initialization}\label{basic-initialization}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} More array initialization examples.}
+
+\PY{c+c1}{\PYZsh{} All elements initiated as zeros.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{All elements initiated as zeros: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} 
+      \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{N1}\PY{p}{,}\PY{n}{N1}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{int32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+All elements initiated as zeros:
+[[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} All elements initiated as ones.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{All elements initiated as ones: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} 
+      \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{n}{N1}\PY{p}{,}\PY{n}{N1}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{int32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+All elements initiated as ones:
+[[1 1 1 1 1]
+ [1 1 1 1 1]
+ [1 1 1 1 1]
+ [1 1 1 1 1]
+ [1 1 1 1 1]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} All elements initiated as a specified value.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{All elements initiated as a specified value: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} 
+      \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{full}\PY{p}{(}\PY{p}{(}\PY{n}{N1}\PY{p}{,}\PY{n}{N1}\PY{p}{)}\PY{p}{,} \PY{n}{N2}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+All elements initiated as a specified value:
+[[10.000 10.000 10.000 10.000 10.000]
+ [10.000 10.000 10.000 10.000 10.000]
+ [10.000 10.000 10.000 10.000 10.000]
+ [10.000 10.000 10.000 10.000 10.000]
+ [10.000 10.000 10.000 10.000 10.000]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} All elements initiated as a letter.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{All elements initiated as a letter: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} 
+      \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{full}\PY{p}{(}\PY{p}{(}\PY{n}{N1}\PY{p}{,}\PY{n}{N1}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+All elements initiated as a letter:
+[['a' 'a' 'a' 'a' 'a']
+ ['a' 'a' 'a' 'a' 'a']
+ ['a' 'a' 'a' 'a' 'a']
+ ['a' 'a' 'a' 'a' 'a']
+ ['a' 'a' 'a' 'a' 'a']]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Initialize an array using an exisiting array as an example.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{All elements initiated as a }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{full like}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ matrix: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} 
+      \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{full\PYZus{}like}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PY{n}{N1}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+All elements initiated as a "full like" matrix:
+[[5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]
+ [5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]
+ [5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]
+ [5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]
+ [5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]
+ [5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]
+ [5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]
+ [5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]
+ [5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]
+ [5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000 5.000]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 2D Identity Matrix.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Initiated 2D Identity Matrix: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{identity}\PY{p}{(}\PY{n}{N1}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Initiated 2D Identity Matrix:
+[[1.000 0.000 0.000 0.000 0.000]
+ [0.000 1.000 0.000 0.000 0.000]
+ [0.000 0.000 1.000 0.000 0.000]
+ [0.000 0.000 0.000 1.000 0.000]
+ [0.000 0.000 0.000 0.000 1.000]]
+
+    \end{Verbatim}
+Repeating array. This is tricky due to the indexing required for proper initialization. The second index for the array 'a' must be written as '0:1' so that it returns a 2D array with shape (1,N3). This allows specification of the axis that we want repeated as shown in the first example where 'axis=0' is specified. If the indexing is written as '0' then a 1D array is returned with shape '(N3,)' and does not allow row repetition, only element repetition as shown in the following statement.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{First row of array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{a}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ repeated N1 times: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} 
+      \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{repeat}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{,}\PY{n}{N1}\PY{p}{,}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{First row elements of array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{a}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ repeated N1 times: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} 
+      \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{repeat}\PY{p}{(}\PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{,}\PY{n}{N1}\PY{p}{)}\PY{p}{)}          \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+First row of array "a" repeated N1 times:
+[[0.345 0.037 0.804 0.180 0.355 0.121 0.544 0.936 0.830 0.916]
+ [0.345 0.037 0.804 0.180 0.355 0.121 0.544 0.936 0.830 0.916]
+ [0.345 0.037 0.804 0.180 0.355 0.121 0.544 0.936 0.830 0.916]
+ [0.345 0.037 0.804 0.180 0.355 0.121 0.544 0.936 0.830 0.916]
+ [0.345 0.037 0.804 0.180 0.355 0.121 0.544 0.936 0.830 0.916]]
+
+First row elements of array "a" repeated N1 times:
+[0.345 0.345 0.345 0.345 0.345 0.037 0.037 0.037 0.037 0.037 0.804 0.804
+ 0.804 0.804 0.804 0.180 0.180 0.180 0.180 0.180 0.355 0.355 0.355 0.355
+ 0.355 0.121 0.121 0.121 0.121 0.121 0.544 0.544 0.544 0.544 0.544 0.936
+ 0.936 0.936 0.936 0.936 0.830 0.830 0.830 0.830 0.830 0.916 0.916 0.916
+ 0.916 0.916]
+
+    \end{Verbatim}
+
+    \hypertarget{special-initialization}{%
+\subsubsection{Special Initialization}\label{special-initialization}}
+Lets put our knowledge of array initialization to the test.
+
+We are going to create the following array:
+[[1.,1.,1.,1.,1.]
+ [1.,0.,0.,0.,1.]
+ [1.,0.,9.,0.,1.]
+ [1.,0.,0.,0.,1.]
+ [1.,1.,1.,1.,1.]]
+This will scale to any shape as long as both dimensions have odd size.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Start with array full of ones.}
+\PY{n}{testShape} \PY{o}{=} \PY{p}{(}\PY{n}{N1}\PY{p}{,}\PY{n}{N1}\PY{p}{)}
+\PY{n}{testIndex} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{n}{testShape}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{int32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{testIndex}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{testIndex}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array "testIndex":
+[[1 1 1 1 1]
+ [1 1 1 1 1]
+ [1 1 1 1 1]
+ [1 1 1 1 1]
+ [1 1 1 1 1]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Fill the inside with zeros.}
+\PY{n}{testIndex}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{n}{testShape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{:}\PY{n}{testShape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{testShape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{testShape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Modified }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{testIndex}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{testIndex}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Modified "testIndex":
+[[1 1 1 1 1]
+ [1 0 0 0 1]
+ [1 0 0 0 1]
+ [1 0 0 0 1]
+ [1 1 1 1 1]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Assign the middle value to 9 and we\PYZsq{}re done.}
+\PY{n}{testIndex}\PY{p}{[}\PY{n}{testShape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{/}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{testShape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{/}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{9.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Final }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{testArrray}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{testIndex}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Final "testArrray":
+[[1 1 1 1 1]
+ [1 0 0 0 1]
+ [1 0 9 0 1]
+ [1 0 0 0 1]
+ [1 1 1 1 1]]
+
+    \end{Verbatim}
+
+    \hypertarget{assignment-is-not-copying}{%
+\subsection{Assignment is NOT copying}\label{assignment-is-not-copying}}
+This section shows the important distinction between assignment and proper initialization of a NumPy array or any variable for that matter. You may be altering the contents of an array when you do not want to and being consciencious about when you are using assignment vs array initialization is the key to preventing this type of error.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Lets start by initializing an array as testA and assigning it to a different }
+\PY{c+c1}{\PYZsh{} variable called testB.}
+
+\PY{n}{testA} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{N1}\PY{p}{,}\PY{n}{N1}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{int32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{testB} \PY{o}{=} \PY{n}{testA}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{testA}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{testA}\PY{p}{)} \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{testB}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{testB}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array "testA":
+[[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+
+Array "testB":
+[[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Alright. We now have two variables that point to an array. Lets try changing}
+\PY{c+c1}{\PYZsh{} the values in the array that testB is assigned to.}
+\PY{n}{testB}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{N2}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{First Test: Change value in }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{testB}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ and check result.}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{testA}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{testA}\PY{p}{)} \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{testB}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{testB}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+First Test: Change value in "testB" and check result.
+
+Array "testA":
+[[10 10 10 10 10]
+ [ 0  0  0  0  0]
+ [ 0  0  0  0  0]
+ [ 0  0  0  0  0]
+ [ 0  0  0  0  0]]
+
+Array "testB":
+[[10 10 10 10 10]
+ [ 0  0  0  0  0]
+ [ 0  0  0  0  0]
+ [ 0  0  0  0  0]
+ [ 0  0  0  0  0]]
+
+    \end{Verbatim}
+Oh. That is NOT good. Changing the values in testB is the same as changing values in testA because they both point to the exact same array in memory. We 'assigned' testB to the array that was 'initialized' when defining testA. If we want to make a proper 'copy' of the array that testA is assigned to then we need to 'initialize' a new array using a method of numpy arrays called 'copy'.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Initialize new arrays and test the difference.}
+\PY{n}{testA} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{N1}\PY{p}{,}\PY{n}{N1}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{int32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{testB} \PY{o}{=} \PY{n}{testA}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Now we have two initialized arrays that are identical in value but stored in }
+\PY{c+c1}{\PYZsh{} separate memory locations. Changing one does not change the other.}
+\PY{n}{testB}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{N2}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Second Test: Change value in testB and check result.}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array testA: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{testA}\PY{p}{)} \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array testB: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{testB}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Second Test: Change value in testB and check result.
+
+Array testA:
+[[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+
+Array testB:
+[[10 10 10 10 10]
+ [ 0  0  0  0  0]
+ [ 0  0  0  0  0]
+ [ 0  0  0  0  0]
+ [ 0  0  0  0  0]]
+
+    \end{Verbatim}
+
+    \hypertarget{advanced-indexing}{%
+\subsection{Advanced Indexing}\label{advanced-indexing}}
+NumPy arrays can be indexed using NumPy arrays or any list/tuple/etc. Wild stuff. 
+We can create useful NumPy arrays for indexing using boolean operators on an 
+array that determines whether each element in an array satisfies a given 
+condition. It initiates a boolean 'mask' that is an array with the same shape as 
+the original array and contains either a "True" (1) or "False" (0) value for every
+element denoting whether the corresponding element from the original array 
+satisfied the given condition.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Find every element in the array \PYZsq{}a\PYZsq{} that has a value greater than a.max()/2}
+\PY{c+c1}{\PYZsh{} This statement initiates a boolean mask array according to the provided condition.}
+\PY{n}{aMaskHalfMax} \PY{o}{=} \PY{p}{(}\PY{n}{a} \PY{o}{\PYZgt{}} \PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aMaskHalfMax.shape: }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aMaskHalfMax}\PY{o}{.}\PY{n}{shape}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aMaskHalfMax.size:  }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aMaskHalfMax}\PY{o}{.}\PY{n}{size}\PY{p}{)}  \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aMaskHalfMax: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}     \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aMaskHalfMax}\PY{p}{)}       \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+aMaskHalfMax.shape: (5, 10, 10)
+aMaskHalfMax.size:  500
+aMaskHalfMax:
+[[[False False  True False False False  True  True  True  True]
+  [False  True False  True False  True False False False  True]
+  [ True  True  True False  True False  True  True  True False]
+  [False False  True  True  True False False  True  True  True]
+  [False False  True  True  True  True  True False False  True]
+  [False  True False False  True False False  True  True  True]
+  [ True False False  True  True  True  True False  True  True]
+  [False  True  True False False False  True False  True False]
+  [ True False  True False False False False False  True False]
+  [False False  True False  True  True False  True False  True]]
+
+ [[ True  True  True  True  True False  True  True False  True]
+  [ True False False False  True False False False False  True]
+  [False False False False  True  True False  True  True False]
+  [ True  True  True  True  True False  True  True  True  True]
+  [False  True False  True  True False False  True False False]
+  [ True  True False False False  True False  True  True False]
+  [False  True False False  True  True False False False  True]
+  [ True False  True False  True False  True  True  True  True]
+  [ True False  True False False  True  True False  True  True]
+  [ True False False False  True  True False  True False False]]
+
+ [[False False False  True  True False  True False  True  True]
+  [ True False  True  True  True False  True  True False False]
+  [ True  True False False False False  True  True  True False]
+  [ True  True False  True  True  True  True False  True  True]
+  [False False  True  True  True  True False False  True  True]
+  [False False False False False  True  True False  True False]
+  [ True False False  True False  True  True False  True  True]
+  [False False False False  True False  True False  True  True]
+  [False False  True False  True False False  True  True  True]
+  [ True False  True False False  True  True False False False]]
+
+ [[False  True  True  True  True False  True False False False]
+  [False False False  True False False  True  True False False]
+  [False  True  True  True False False False False False False]
+  [ True False False  True False False  True  True False False]
+  [ True  True  True  True  True  True False  True False  True]
+  [False  True  True  True  True False  True False  True  True]
+  [ True  True  True False  True False  True  True  True False]
+  [ True  True  True  True  True  True False False  True False]
+  [ True False False False  True False False  True  True  True]
+  [ True False  True  True False  True False  True False  True]]
+
+ [[False False  True  True  True  True False  True False False]
+  [ True False  True  True  True False  True  True False  True]
+  [ True  True  True False False  True False  True  True  True]
+  [False  True False False  True  True False False False False]
+  [ True  True  True  True False  True  True  True False False]
+  [False False  True False  True  True False  True  True False]
+  [False False False  True  True  True  True False  True  True]
+  [ True  True  True False False False  True False False False]
+  [False False  True  True  True False  True False  True  True]
+  [ True  True  True False False False  True  True False  True]]]
+
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Index array \PYZdq{}a\PYZdq{} using the created mask.}
+\PY{n}{aIndexMaskHalfMax} \PY{o}{=} \PY{n}{a}\PY{p}{[}\PY{n}{aMaskHalfMax}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aIndexMaskHalfMax.shape: }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aIndexMaskHalfMax}\PY{o}{.}\PY{n}{shape}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aIndexMaskHalfMax.size:  }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aIndexMaskHalfMax}\PY{o}{.}\PY{n}{size}\PY{p}{)}  \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aIndexMaskHalfMax: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}     \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aIndexMaskHalfMax}\PY{p}{)}       \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+aIndexMaskHalfMax.shape: (269,)
+aIndexMaskHalfMax.size:  269
+aIndexMaskHalfMax:
+[0.804 0.544 0.936 0.830 0.916 0.964 0.793 0.776 0.826 0.548 0.907 0.787
+ 0.654 0.726 0.563 0.694 0.865 0.577 0.544 0.914 0.764 0.910 0.568 0.763
+ 0.963 0.766 0.901 0.880 0.973 0.826 0.600 0.594 0.796 0.848 0.617 0.499
+ 0.840 0.636 0.675 0.985 0.568 0.672 0.547 0.707 0.846 0.712 0.743 0.936
+ 0.617 0.773 0.831 0.583 0.759 0.780 0.940 0.786 0.785 0.719 0.611 0.651
+ 0.712 0.849 0.750 0.831 0.829 0.849 0.712 0.840 0.781 0.938 0.564 0.625
+ 0.827 0.787 0.860 0.730 0.710 0.885 0.557 0.789 0.776 0.795 0.537 0.855
+ 0.504 0.647 0.569 0.768 0.681 0.564 0.512 0.592 0.993 0.516 0.995 0.872
+ 0.653 0.850 0.770 0.996 0.882 0.686 0.989 0.761 0.596 0.510 0.614 0.996
+ 0.800 0.652 0.871 0.852 0.760 0.745 0.712 0.711 0.789 0.508 0.841 0.858
+ 0.928 0.525 0.613 0.772 0.697 0.832 0.707 0.930 0.528 0.721 0.741 0.519
+ 0.644 0.505 0.969 0.622 0.800 0.751 0.961 0.892 0.777 0.715 0.759 0.657
+ 0.873 0.530 0.717 0.835 0.558 0.937 0.622 0.794 0.744 0.958 0.630 0.732
+ 0.705 0.974 0.796 0.746 0.709 0.550 0.551 0.877 0.788 0.754 0.970 0.823
+ 0.809 0.504 0.955 0.635 0.586 0.764 0.504 0.530 0.916 0.979 0.778 0.536
+ 0.612 0.862 0.821 0.791 0.630 0.741 0.898 0.586 0.552 0.653 0.783 0.621
+ 0.830 0.638 0.678 0.653 0.620 0.562 0.927 0.940 0.728 0.741 0.865 0.606
+ 0.904 0.720 0.825 0.919 0.786 0.839 0.545 0.787 0.603 0.905 0.664 0.639
+ 0.687 0.731 0.919 0.714 0.743 0.907 0.743 0.974 0.576 0.583 0.824 0.839
+ 0.611 0.571 0.531 0.913 0.985 0.750 0.596 0.940 0.908 0.980 0.576 0.599
+ 0.955 0.920 0.657 0.823 0.860 0.716 0.738 0.625 0.533 0.909 0.726 0.787
+ 0.978 0.887 0.693 0.884 0.689 0.740 0.784 0.749 0.855 0.741 0.928 0.525
+ 0.541 0.919 0.927 0.654 0.732]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Create a copy of array \PYZdq{}a\PYZdq{} so that we can alter the contents.}
+\PY{n}{aTest} \PY{o}{=} \PY{n}{a}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Turn the specified values to zero.}
+\PY{n}{aTest}\PY{p}{[}\PY{n}{aMaskHalfMax}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{0}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Turn the specified values to zero. }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aTest}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Turn the specified values to zero.
+[[[0.345 0.037 0.000 0.180 0.355 0.121 0.000 0.000 0.000 0.000]
+  [0.077 0.000 0.317 0.000 0.491 0.000 0.450 0.322 0.482 0.000]
+  [0.000 0.000 0.000 0.338 0.000 0.017 0.000 0.000 0.000 0.095]
+  [0.081 0.273 0.000 0.000 0.000 0.418 0.156 0.000 0.000 0.000]
+  [0.344 0.359 0.000 0.000 0.000 0.000 0.000 0.263 0.031 0.000]
+  [0.149 0.000 0.474 0.482 0.000 0.154 0.103 0.000 0.000 0.000]
+  [0.000 0.317 0.417 0.000 0.000 0.000 0.000 0.218 0.000 0.000]
+  [0.415 0.000 0.000 0.240 0.364 0.158 0.000 0.442 0.000 0.122]
+  [0.000 0.096 0.000 0.450 0.105 0.236 0.035 0.112 0.000 0.082]
+  [0.338 0.213 0.000 0.136 0.000 0.000 0.030 0.000 0.427 0.000]]
+
+ [[0.000 0.000 0.000 0.000 0.000 0.063 0.000 0.000 0.343 0.000]
+  [0.000 0.492 0.416 0.086 0.000 0.327 0.066 0.365 0.022 0.000]
+  [0.107 0.421 0.121 0.058 0.000 0.000 0.042 0.000 0.000 0.198]
+  [0.000 0.000 0.000 0.000 0.000 0.324 0.000 0.000 0.000 0.000]
+  [0.259 0.000 0.250 0.000 0.000 0.314 0.434 0.000 0.147 0.203]
+  [0.000 0.000 0.491 0.279 0.455 0.000 0.230 0.000 0.000 0.319]
+  [0.416 0.000 0.398 0.319 0.000 0.000 0.138 0.461 0.331 0.000]
+  [0.000 0.070 0.000 0.182 0.000 0.052 0.000 0.000 0.000 0.000]
+  [0.000 0.422 0.000 0.171 0.190 0.000 0.000 0.209 0.000 0.000]
+  [0.000 0.340 0.134 0.363 0.000 0.000 0.396 0.000 0.159 0.384]]
+
+ [[0.194 0.480 0.143 0.000 0.000 0.011 0.000 0.427 0.000 0.000]
+  [0.000 0.406 0.000 0.000 0.000 0.143 0.000 0.000 0.490 0.275]
+  [0.000 0.000 0.169 0.201 0.138 0.495 0.000 0.000 0.000 0.146]
+  [0.000 0.000 0.064 0.000 0.000 0.000 0.000 0.447 0.000 0.000]
+  [0.111 0.393 0.000 0.000 0.000 0.000 0.031 0.093 0.000 0.000]
+  [0.105 0.077 0.085 0.132 0.055 0.000 0.000 0.371 0.000 0.206]
+  [0.000 0.177 0.055 0.000 0.340 0.000 0.000 0.263 0.000 0.000]
+  [0.323 0.379 0.006 0.024 0.000 0.088 0.000 0.410 0.000 0.000]
+  [0.160 0.275 0.000 0.188 0.000 0.110 0.465 0.000 0.000 0.000]
+  [0.000 0.478 0.000 0.204 0.454 0.000 0.000 0.048 0.303 0.239]]
+
+ [[0.270 0.000 0.000 0.000 0.000 0.159 0.000 0.131 0.353 0.475]
+  [0.379 0.415 0.407 0.000 0.134 0.306 0.000 0.000 0.458 0.055]
+  [0.350 0.000 0.000 0.000 0.488 0.317 0.010 0.320 0.341 0.224]
+  [0.000 0.109 0.359 0.000 0.031 0.233 0.000 0.000 0.098 0.364]
+  [0.000 0.000 0.000 0.000 0.000 0.000 0.438 0.000 0.182 0.000]
+  [0.346 0.000 0.000 0.000 0.000 0.290 0.000 0.106 0.000 0.000]
+  [0.000 0.000 0.000 0.037 0.000 0.237 0.000 0.000 0.000 0.061]
+  [0.000 0.000 0.000 0.000 0.000 0.000 0.239 0.395 0.000 0.076]
+  [0.000 0.020 0.367 0.233 0.000 0.316 0.397 0.000 0.000 0.000]
+  [0.000 0.322 0.000 0.000 0.469 0.000 0.221 0.000 0.230 0.000]]
+
+ [[0.180 0.465 0.000 0.000 0.000 0.000 0.003 0.000 0.289 0.464]
+  [0.000 0.053 0.000 0.000 0.000 0.095 0.000 0.000 0.328 0.000]
+  [0.000 0.000 0.000 0.093 0.328 0.000 0.146 0.000 0.000 0.000]
+  [0.324 0.000 0.413 0.430 0.000 0.000 0.125 0.440 0.142 0.391]
+  [0.000 0.000 0.000 0.000 0.428 0.000 0.000 0.000 0.126 0.137]
+  [0.261 0.334 0.000 0.228 0.000 0.000 0.237 0.000 0.000 0.121]
+  [0.047 0.186 0.207 0.000 0.000 0.000 0.000 0.249 0.000 0.000]
+  [0.000 0.000 0.000 0.042 0.094 0.171 0.000 0.162 0.306 0.350]
+  [0.049 0.227 0.000 0.000 0.000 0.033 0.000 0.083 0.000 0.000]
+  [0.000 0.000 0.000 0.015 0.387 0.174 0.000 0.000 0.271 0.000]]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Turn the specified values back to their original value.}
+\PY{n}{aTest}\PY{p}{[}\PY{n}{aMaskHalfMax}\PY{p}{]} \PY{o}{=} \PY{n}{aIndexMaskHalfMax}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Turn the specified values back to their original value. }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aTest}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Turn the specified values back to their original value.
+[[[0.345 0.037 0.804 0.180 0.355 0.121 0.544 0.936 0.830 0.916]
+  [0.077 0.964 0.317 0.793 0.491 0.776 0.450 0.322 0.482 0.826]
+  [0.548 0.907 0.787 0.338 0.654 0.017 0.726 0.563 0.694 0.095]
+  [0.081 0.273 0.865 0.577 0.544 0.418 0.156 0.914 0.764 0.910]
+  [0.344 0.359 0.568 0.763 0.963 0.766 0.901 0.263 0.031 0.880]
+  [0.149 0.973 0.474 0.482 0.826 0.154 0.103 0.600 0.594 0.796]
+  [0.848 0.317 0.417 0.617 0.499 0.840 0.636 0.218 0.675 0.985]
+  [0.415 0.568 0.672 0.240 0.364 0.158 0.547 0.442 0.707 0.122]
+  [0.846 0.096 0.712 0.450 0.105 0.236 0.035 0.112 0.743 0.082]
+  [0.338 0.213 0.936 0.136 0.617 0.773 0.030 0.831 0.427 0.583]]
+
+ [[0.759 0.780 0.940 0.786 0.785 0.063 0.719 0.611 0.343 0.651]
+  [0.712 0.492 0.416 0.086 0.849 0.327 0.066 0.365 0.022 0.750]
+  [0.107 0.421 0.121 0.058 0.831 0.829 0.042 0.849 0.712 0.198]
+  [0.840 0.781 0.938 0.564 0.625 0.324 0.827 0.787 0.860 0.730]
+  [0.259 0.710 0.250 0.885 0.557 0.314 0.434 0.789 0.147 0.203]
+  [0.776 0.795 0.491 0.279 0.455 0.537 0.230 0.855 0.504 0.319]
+  [0.416 0.647 0.398 0.319 0.569 0.768 0.138 0.461 0.331 0.681]
+  [0.564 0.070 0.512 0.182 0.592 0.052 0.993 0.516 0.995 0.872]
+  [0.653 0.422 0.850 0.171 0.190 0.770 0.996 0.209 0.882 0.686]
+  [0.989 0.340 0.134 0.363 0.761 0.596 0.396 0.510 0.159 0.384]]
+
+ [[0.194 0.480 0.143 0.614 0.996 0.011 0.800 0.427 0.652 0.871]
+  [0.852 0.406 0.760 0.745 0.712 0.143 0.711 0.789 0.490 0.275]
+  [0.508 0.841 0.169 0.201 0.138 0.495 0.858 0.928 0.525 0.146]
+  [0.613 0.772 0.064 0.697 0.832 0.707 0.930 0.447 0.528 0.721]
+  [0.111 0.393 0.741 0.519 0.644 0.505 0.031 0.093 0.969 0.622]
+  [0.105 0.077 0.085 0.132 0.055 0.800 0.751 0.371 0.961 0.206]
+  [0.892 0.177 0.055 0.777 0.340 0.715 0.759 0.263 0.657 0.873]
+  [0.323 0.379 0.006 0.024 0.530 0.088 0.717 0.410 0.835 0.558]
+  [0.160 0.275 0.937 0.188 0.622 0.110 0.465 0.794 0.744 0.958]
+  [0.630 0.478 0.732 0.204 0.454 0.705 0.974 0.048 0.303 0.239]]
+
+ [[0.270 0.796 0.746 0.709 0.550 0.159 0.551 0.131 0.353 0.475]
+  [0.379 0.415 0.407 0.877 0.134 0.306 0.788 0.754 0.458 0.055]
+  [0.350 0.970 0.823 0.809 0.488 0.317 0.010 0.320 0.341 0.224]
+  [0.504 0.109 0.359 0.955 0.031 0.233 0.635 0.586 0.098 0.364]
+  [0.764 0.504 0.530 0.916 0.979 0.778 0.438 0.536 0.182 0.612]
+  [0.346 0.862 0.821 0.791 0.630 0.290 0.741 0.106 0.898 0.586]
+  [0.552 0.653 0.783 0.037 0.621 0.237 0.830 0.638 0.678 0.061]
+  [0.653 0.620 0.562 0.927 0.940 0.728 0.239 0.395 0.741 0.076]
+  [0.865 0.020 0.367 0.233 0.606 0.316 0.397 0.904 0.720 0.825]
+  [0.919 0.322 0.786 0.839 0.469 0.545 0.221 0.787 0.230 0.603]]
+
+ [[0.180 0.465 0.905 0.664 0.639 0.687 0.003 0.731 0.289 0.464]
+  [0.919 0.053 0.714 0.743 0.907 0.095 0.743 0.974 0.328 0.576]
+  [0.583 0.824 0.839 0.093 0.328 0.611 0.146 0.571 0.531 0.913]
+  [0.324 0.985 0.413 0.430 0.750 0.596 0.125 0.440 0.142 0.391]
+  [0.940 0.908 0.980 0.576 0.428 0.599 0.955 0.920 0.126 0.137]
+  [0.261 0.334 0.657 0.228 0.823 0.860 0.237 0.716 0.738 0.121]
+  [0.047 0.186 0.207 0.625 0.533 0.909 0.726 0.249 0.787 0.978]
+  [0.887 0.693 0.884 0.042 0.094 0.171 0.689 0.162 0.306 0.350]
+  [0.049 0.227 0.740 0.784 0.749 0.033 0.855 0.083 0.741 0.928]
+  [0.525 0.541 0.919 0.015 0.387 0.174 0.927 0.654 0.271 0.732]]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} The function np.any() will find whether a given condition is satisfied by ANY}
+\PY{c+c1}{\PYZsh{} elements along the given axes. }
+
+\PY{n}{condition1}  \PY{o}{=} \PY{p}{(}\PY{n}{a} \PY{o}{==} \PY{n}{a}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{aAnyHalfMax} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{any}\PY{p}{(}\PY{n}{condition1}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Do ANY elements of the tables in array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{a}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ satisfy the given condition?}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,}
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aAnyHalfMax: }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aAnyHalfMax}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{This tells us that table }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{aAnyHalfMax} \PY{o}{==} \PY{k+kc}{True}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ in array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{a}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ contains the element with the maximum value.}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Do ANY elements of the tables in array "a" satisfy the given condition?
+aAnyHalfMax: [False  True False False False]
+This tells us that table [1] in array "a" contains the element with the maximum
+value.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} The function np.all() will find whether a given condition is satisfied by ALL}
+\PY{c+c1}{\PYZsh{} elements along the given axes.}
+
+\PY{c+c1}{\PYZsh{} Create boolean mask array using the condition we are testing. }
+\PY{c+c1}{\PYZsh{} Then pass it to the function np.all and specify the axes.}
+\PY{n}{condition2}   \PY{o}{=} \PY{p}{(}\PY{n}{a} \PY{o}{\PYZlt{}} \PY{n}{a}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{aAllLessMax} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{n}{condition2}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Do ALL elements of the tables in array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{a}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ satisfy the given condition?}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{aAllInterval: }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{aAllLessMax}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{This tells us that table }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{aAllLessMax} \PY{o}{==} \PY{k+kc}{False}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ contains the element in array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{a}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ with the maximum value.}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Do ALL elements of the tables in array "a" satisfy the given condition?
+aAllInterval: [ True False  True  True  True]
+This tells us that table [1] contains the element in array "a" with the maximum
+value.
+    \end{Verbatim}
+
+    \hypertarget{mathematical-operations-on-numpy-arrays}{%
+\subsection{Mathematical Operations on NumPy
+arrays}\label{mathematical-operations-on-numpy-arrays}}
+Now we will look at the mathematical operations you can perform over the elements of a NumPy array. Arithmetic operations between a scalar and a NumPy array are generally 'elementwise' meaning they are applied to every element of the array individually. We do not need to loop over the array to apply the operation to all of its elements. This process is automated by the NumPy array. This is the reason we use NumPy arrays for data analysis as it simplifies the code and is more efficient in terms of its runtime/complexity.
+    \hypertarget{arithmetic-operations-between-scalar-and-numpy-array}{%
+\subsubsection{Arithmetic operations between scalar and NumPy
+array}\label{arithmetic-operations-between-scalar-and-numpy-array}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Initialize array for operations.}
+\PY{n}{b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{full}\PY{p}{(}\PY{p}{(}\PY{n}{N1}\PY{p}{,}\PY{n}{N1}\PY{p}{)}\PY{p}{,} \PY{n}{N1} \PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{int32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b= }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b=
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Addition}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b+}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{N1}\PY{p}{)} \PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{+}\PY{n}{N1}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b+5 =
+[[10 10 10 10 10]
+ [10 10 10 10 10]
+ [10 10 10 10 10]
+ [10 10 10 10 10]
+ [10 10 10 10 10]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Subtraction}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b\PYZhy{}}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{N1}\PY{p}{)} \PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{\PYZhy{}}\PY{n}{N1}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b-5 =
+[[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Multiplication}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b*}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{N1}\PY{p}{)} \PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{*}\PY{n}{N1}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b*5 =
+[[25 25 25 25 25]
+ [25 25 25 25 25]
+ [25 25 25 25 25]
+ [25 25 25 25 25]
+ [25 25 25 25 25]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Division}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b/}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{N1}\PY{p}{)} \PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{/}\PY{n}{N1}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b/5 =
+[[1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Exponentiation (Respresented using the \PYZsq{}**\PYZsq{} symbol)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b\PYZca{}2 = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b\^{}2 =
+[[25 25 25 25 25]
+ [25 25 25 25 25]
+ [25 25 25 25 25]
+ [25 25 25 25 25]
+ [25 25 25 25 25]]
+
+    \end{Verbatim}
+
+    \hypertarget{functions-applied-to-numpy-arrays}{%
+\subsubsection{Functions applied to NumPy
+Arrays}\label{functions-applied-to-numpy-arrays}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} You can also apply functions.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array sin(b) = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}              \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{b}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array cos(b) = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}              \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{b}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,}  
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array exp(b) = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}              \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{n}{b}\PY{p}{)}\PY{p}{)} \PY{p}{,} \PY{n}{NL}\PY{o}{*}\PY{n}{LS} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array sin(b)\PYZca{}2 + cos(b)\PYZca{}2 = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{b}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{cos}\PY{p}{(}\PY{n}{b}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array sin(b) =
+[[-0.959 -0.959 -0.959 -0.959 -0.959]
+ [-0.959 -0.959 -0.959 -0.959 -0.959]
+ [-0.959 -0.959 -0.959 -0.959 -0.959]
+ [-0.959 -0.959 -0.959 -0.959 -0.959]
+ [-0.959 -0.959 -0.959 -0.959 -0.959]]
+
+Array cos(b) =
+[[0.284 0.284 0.284 0.284 0.284]
+ [0.284 0.284 0.284 0.284 0.284]
+ [0.284 0.284 0.284 0.284 0.284]
+ [0.284 0.284 0.284 0.284 0.284]
+ [0.284 0.284 0.284 0.284 0.284]]
+
+Array exp(b) =
+[[148.413 148.413 148.413 148.413 148.413]
+ [148.413 148.413 148.413 148.413 148.413]
+ [148.413 148.413 148.413 148.413 148.413]
+ [148.413 148.413 148.413 148.413 148.413]
+ [148.413 148.413 148.413 148.413 148.413]]
+
+Array sin(b)\^{}2 + cos(b)\^{}2 =
+[[1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]]
+    \end{Verbatim}
+
+    \hypertarget{operations-between-numpy-arrays}{%
+\subsubsection{Operations between NumPy
+arrays}\label{operations-between-numpy-arrays}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} What happens when we try to do arithmetic between two arrays?}
+\PY{c+c1}{\PYZsh{} Initialize array c as a copy of b.}
+\PY{n}{c} \PY{o}{=} \PY{n}{b}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array }\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{= }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array }\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{c}\PY{l+s+s1}{\PYZdq{}}\PY{l+s+s1}{= }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{c}\PY{p}{)} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array "b"=
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+Array "c"=
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Addition}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b+c= }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{+}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{c}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{+}\PY{n}{c}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b+c=
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
++
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+=
+[[10 10 10 10 10]
+ [10 10 10 10 10]
+ [10 10 10 10 10]
+ [10 10 10 10 10]
+ [10 10 10 10 10]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Subtraction}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b\PYZhy{}c= }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{c}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{\PYZhy{}}\PY{n}{c}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b-c=
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+-
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+=
+[[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Multiplication}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b*c= }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{*}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{c}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{*}\PY{n}{c}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b*c=
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+*
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+=
+[[25 25 25 25 25]
+ [25 25 25 25 25]
+ [25 25 25 25 25]
+ [25 25 25 25 25]
+ [25 25 25 25 25]]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Division}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b/c= }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{c}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{/}\PY{n}{c}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b/c=
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+/
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+=
+[[1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]
+ [1.000 1.000 1.000 1.000 1.000]]
+
+    \end{Verbatim}
+Ok. It applied element by element arithmetic. Very useful to know. What happens when we try to do arithmetic operations between two arrays that do not have the same shape?
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} This \PYZdq{}try except\PYZdq{} sequence allows execution of code that produces an error.}
+\PY{c+c1}{\PYZsh{} The statement underneath \PYZdq{}except:\PYZdq{} prints the last error in the stack trace.}
+\PY{k}{try}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Shape of array a: }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{o}{.}\PY{n}{shape}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+          \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Shape of array b: }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{.}\PY{n}{shape}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array a+b= }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}      \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{a}\PY{o}{+}\PY{n}{b}\PY{p}{)}     \PY{p}{,} \PY{n}{NL}\PY{p}{)}
+\PY{k}{except}\PY{p}{:}
+    \PY{n}{traceback}\PY{o}{.}\PY{n}{print\PYZus{}exc}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Shape of array a: (5, 10, 10)
+Shape of array b: (5, 5)
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Traceback (most recent call last):
+  File "C:\textbackslash{}Users\textbackslash{}spotn\textbackslash{}AppData\textbackslash{}Local\textbackslash{}Temp/ipykernel\_15032/2001332600.py", line
+6, in <module>
+    print('Array a+b= \textbackslash{}n'      , str(a+b)     , NL)
+ValueError: operands could not be broadcast together with shapes (5,10,10) (5,5)
+    \end{Verbatim}
+Ah. It did not like that. "Operands could not be broadcast together with shapes (N1,N2,N3) (N1,N1)". This implies that the operations between arrays is known as "broadcasting" and that the shape of the arrays is important when performing operations that utilize broadcasting. Broadcasting is the most important feature of NumPy arrays as we will find out in the next section. 
+    \hypertarget{broadcasting}{%
+\subsection{Broadcasting}\label{broadcasting}}
+Source: NumPy Documentation v1.22 (All quotes regarding broadcasting)
+URL: https://numpy.org/doc/stable/user/basics.broadcasting.html
+
+Quote: "Broadcasting provides a means of vectorizing array operations so that looping occurs in C instead of Python. It does this without making needless copies of data and usually leads to efficient algorithm implementations. There are, however, cases where broadcasting is a bad idea because it leads to inefficient use of memory that slows computation."
+
+Comment:
+So, broadcasting defines the behavior of operations on arrays. Lets try to learn a little more about broadcasting through further experimentation and practice.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Initialize array for broadcast testing}
+\PY{n}{d} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{n}{N1}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{int32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Now we have array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{b}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ with shape }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{.}\PY{n}{shape}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{And array }\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{d}\PY{l+s+se}{\PYZbs{}\PYZdq{}}\PY{l+s+s1}{ with shape }\PY{l+s+s1}{\PYZsq{}}         \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{d}\PY{o}{.}\PY{n}{shape}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{d}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Now we have array "b" with shape (5, 5)
+[[5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]
+ [5 5 5 5 5]]
+And array "d" with shape (5,)
+[1 1 1 1 1]
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} What happens if we try to add these arrays together?}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array b+d = }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}      \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{+}\PY{n}{d}\PY{p}{)}         \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Array (b+d).shape: }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{p}{(}\PY{n}{b}\PY{o}{+}\PY{n}{d}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{)} \PY{p}{,} \PY{n}{NL} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Array b+d =
+[[6 6 6 6 6]
+ [6 6 6 6 6]
+ [6 6 6 6 6]
+ [6 6 6 6 6]
+ [6 6 6 6 6]]
+Array (b+d).shape: (5, 5)
+
+    \end{Verbatim}
+Ok that worked. This, along with what we learned inthe last seciton, should allow us to infer what is happening when we add b+d. Let's look at the documentation to double check our understanding.
+
+Quote: "NumPy operations are usually done on pairs of arrays on an element-by-element basis. In the simplest case, the two arrays must have exactly the same shape."
+
+Comment:
+This is what we saw in the section on operations between NumPy arrays where both arrays "b" and "c" had the same shape. This type of broad-casting is necessary when you have two arrays with unique values that cannot be represented by a single variable.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Example: Broadcasting between arrays with same shape.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b.shape = }\PY{l+s+s1}{\PYZsq{}}     \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{b}\PY{o}{.}\PY{n}{shape}\PY{p}{)}    \PY{p}{,} \PY{n}{NL} \PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c.shape = }\PY{l+s+s1}{\PYZsq{}}     \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{n}{c}\PY{o}{.}\PY{n}{shape}\PY{p}{)}    \PY{p}{,} \PY{n}{NL} \PY{p}{,}
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{(b+c).shape = }\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{p}{(}\PY{n}{b}\PY{o}{+}\PY{n}{c}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{)} \PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+b.shape = (5, 5)
+c.shape = (5, 5)
+(b+c).shape = (5, 5)
+    \end{Verbatim}
+Quote: "NumPy’s broadcasting rule relaxes this constraint when the arrays’ shapes meet certain constraints. The simplest broadcasting example occurs when an array and a scalar value are combined in an operation. We can think of the scalar being stretched during the arithmetic operation into an array with the same shape as the NumPy array being operated on."
+
+Comment:
+This is what we observed in the section detailing arithmetic operations between a scalar and a NumPy array. This method of broadcasting is moreefficient because less memory is moved around during the operation. It is more memory intensive to work with an array containing elements that 
+all have the same value than a scalar with the same value.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Example: Broadcasting between scalar and an array.}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{(N1*b).shape =}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n+nb}{str}\PY{p}{(}\PY{p}{(}\PY{n}{N1}\PY{o}{*}\PY{n}{b}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(N1*b).shape = (5, 5)
+    \end{Verbatim}
+Quote: "When operating on two arrays, NumPy compares their shapes element-wise. It starts with the trailing (i.e. rightmost) dimensions and works its way left. Two dimensions are compatible when
+
+    1. they are equal
+    
+    2. one of them is one
+    
+If these conditions are not met, a ValueError: operands could not be broadcast together exception is thrown, indicating that the arrays have incompatible shapes. The size of the resulting array is the size that is not 1 along each axis of the inputs."
+
+Comment:
+This is what we observed in this section between array "b" and array "d". This is very important to understand when trying to perform operations between arrays of different sizes. NumPy broadcasting is not magic and can only be used in certain situations.
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Example: Initialize arrays and look at the shape of the resulting array after broadcasting.}
+\PY{n}{bcA} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{} (4d array):  8 x 1 x 6 x 1}
+\PY{n}{bcB} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}  \PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{} (3d array):      7 x 1 x 5}
+\PY{n}{bcC} \PY{o}{=} \PY{n}{bcA} \PY{o}{+} \PY{n}{bcB}          \PY{c+c1}{\PYZsh{} (4d array):  8 x 7 x 6 x 5}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bcC.shape =}\PY{l+s+s1}{\PYZsq{}} \PY{p}{,} \PY{n}{bcC}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+bcC.shape = (8, 7, 6, 5)
+    \end{Verbatim}
+
+    \hypertarget{comments-and-thoughts}{%
+\subsection{Comments and Thoughts}\label{comments-and-thoughts}}
+This is just a preview of what NumPy arrays have to offer. These properties make NumPy arrays an essential tool for people that requires easy and efficient manipulation of large data structures. I personally have used NumPy arrays in all of my scientific projects that require the manipulation of large, digital data structures because of their versatility.
+
+Remember that NumPy arrays are not always the best tool for the job and using them requires careful consideration of the pros and cons when compared to something else.
+
+Pros:
+    
+Cons:
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

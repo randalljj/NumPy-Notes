@@ -1,0 +1,959 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "f6bb6b45",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "# NumPy Notes\n",
+    "### Author: Jesse Randall\n",
+    "### Date: 20/01/2022"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "83429d20-cd5b-4a90-9c4e-ce6787f97fff",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "## Preface"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "547d26d3-ba21-4039-a264-76e122ea81f7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "This notebook is meant for people who are familiar with the base\n",
+    "functionality (syntax, methods, libraries, etc.) of Python and are\n",
+    "looking to learn or review the contents of the NumPy library.\n",
+    "'''"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d632a9c1-2301-4d48-b065-552ad7870214",
+   "metadata": {},
+   "source": [
+    "### Changelog"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a1c4759f-187f-4eab-91e0-5a94128c7958",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "25/01/2022: \n",
+    "Original use of string concatenation using '+' operator for print \n",
+    "statements is not efficient. I used string concatenation to make \n",
+    "the code more readable. However, I found that this method of string \n",
+    "concatenation is of O(N^2) complexity, where N is the number of \n",
+    "characters in each string, in Python because strings are immutable \n",
+    "meaning they cannot be changed. Everytime string concatenation is \n",
+    "performed using the '+' operator, a new string is made resulting in \n",
+    "the minimum O(N^2) complexity if all strings are of the same size. \n",
+    "This is meant to be a beginner guide to NumPy and I do not want to \n",
+    "demonstrate inefficient coding practice. Newer programmers will use \n",
+    "this as an example of what 'good' coding looks like so I want to \n",
+    "make sure that I demonstrate efficient coding practice throughout.\n",
+    "            \n",
+    "I replaced string concatenation using the '+' operator with the str.join() \n",
+    "method which takes a list of the strings that are going to be concatenated. \n",
+    "This method creates exactly one string to contain the list of strings provided\n",
+    "meaning it is O(N) complexity. Significantly more efficient.\n",
+    "'''"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2daa67fd",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "## Import NumPy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "2d0e1448",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Import NumPy using abreviation 'np' for easier typing. Standard shorthand. Also\n",
+    "# import other useful libraries that will be used.\n",
+    "\n",
+    "import numpy as np # NumPy library. Used to instantiate arrays and perform array operations.\n",
+    "import traceback   # Traceback library. Used to print the call stack when an error occurs.\n",
+    "\n",
+    "# Initializizng variables for NumPy array dimensions and general use.\n",
+    "N1 = 5        # Size of NumPy array dimension 1.\n",
+    "N2 = int(1e2) # Size of NumPy array dimension 2. 1e# means 10^# power.\n",
+    "N3 = int(1e2) # Size of NumPy array dimension 3.\n",
+    "NL = '\\n'     # New line or return. Makes coding print statements simpler.\n",
+    "ls = 2        # Number of 'newline' or 'return' commnads used when printing. "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "62e7ce76",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "## Initialization of NumPy Arrays"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "0f90546d",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "The NumPy array 'a': \n",
+      "[[[0.03766141 0.25322502 0.07646258 ... 0.84975037 0.47309328 0.61110766]\n",
+      "  [0.33700413 0.9643776  0.21232576 ... 0.37770972 0.08253651 0.58224255]\n",
+      "  [0.97031927 0.47575636 0.99613926 ... 0.95897713 0.23314241 0.75011894]\n",
+      "  ...\n",
+      "  [0.66764054 0.15220106 0.79038526 ... 0.87230994 0.063029   0.70283841]\n",
+      "  [0.92752993 0.39634253 0.09026974 ... 0.27615873 0.3286422  0.20611095]\n",
+      "  [0.27482403 0.2111966  0.24223238 ... 0.52121898 0.0433819  0.09553743]]\n",
+      "\n",
+      " [[0.6634396  0.7226751  0.53341011 ... 0.84546805 0.68079966 0.35236785]\n",
+      "  [0.40441647 0.44018607 0.6450552  ... 0.99742913 0.69926358 0.48185962]\n",
+      "  [0.57105167 0.08500533 0.97283467 ... 0.66756631 0.19939453 0.52924744]\n",
+      "  ...\n",
+      "  [0.3719674  0.78998208 0.42351581 ... 0.57551926 0.26236315 0.84294529]\n",
+      "  [0.44977826 0.85737377 0.75973199 ... 0.22741134 0.07257476 0.69046166]\n",
+      "  [0.11568052 0.64618135 0.08868759 ... 0.60427788 0.08609733 0.89051204]]\n",
+      "\n",
+      " [[0.24353798 0.10997122 0.11761367 ... 0.59712465 0.48493016 0.21835676]\n",
+      "  [0.57213825 0.96922621 0.05582607 ... 0.43427036 0.03502068 0.05890153]\n",
+      "  [0.39452277 0.8853784  0.86692709 ... 0.75303415 0.56993379 0.77929999]\n",
+      "  ...\n",
+      "  [0.70109335 0.11203401 0.67360374 ... 0.16108514 0.89148644 0.44810253]\n",
+      "  [0.85424002 0.22579424 0.77125312 ... 0.07293474 0.02208913 0.19718057]\n",
+      "  [0.31953016 0.59546954 0.63517909 ... 0.27149213 0.9996344  0.60133068]]\n",
+      "\n",
+      " [[0.82018904 0.54650139 0.19984884 ... 0.10481186 0.5349647  0.58870596]\n",
+      "  [0.1970754  0.56058658 0.40548006 ... 0.38752997 0.76388142 0.58499785]\n",
+      "  [0.75049233 0.52993535 0.47657537 ... 0.65661436 0.30183871 0.5980139 ]\n",
+      "  ...\n",
+      "  [0.49475124 0.60012385 0.30580397 ... 0.59577165 0.54776522 0.29090254]\n",
+      "  [0.04589108 0.59729535 0.18923087 ... 0.45803918 0.65251306 0.37618193]\n",
+      "  [0.09710913 0.15939429 0.51843102 ... 0.64881402 0.0467487  0.73526186]]\n",
+      "\n",
+      " [[0.88278452 0.20117482 0.8681976  ... 0.08596504 0.09075242 0.03541509]\n",
+      "  [0.80535949 0.49479691 0.97649815 ... 0.85340793 0.79743355 0.81982427]\n",
+      "  [0.02999183 0.80011332 0.82753668 ... 0.0715148  0.65032823 0.40849771]\n",
+      "  ...\n",
+      "  [0.04264129 0.2095252  0.18067018 ... 0.59974678 0.2625988  0.68362228]\n",
+      "  [0.37348565 0.50885587 0.37917701 ... 0.30963674 0.5800383  0.51885193]\n",
+      "  [0.32854261 0.75320667 0.99581763 ... 0.31798282 0.67167155 0.91036008]]]\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "'''\n",
+    "Initialization and properties of NumPy arrays. Example np.random.random_sample.\n",
+    "Standard function for initiating array of random values in the interval [0,1).\n",
+    "Takes a tuple to define the shape or size of each dimension for the array. \n",
+    "'''\n",
+    "\n",
+    "# Initialization. Different intialization for different array types. Check documentation.\n",
+    "a = np.random.random_sample((N1,N2,N3)) \n",
+    "print(''.join(('The NumPy array \\'a\\': \\n' , str(a) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "8ae50314",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "The data type for all elements: float64\n",
+      "The size of each element in memory in bytes: 8\n",
+      "The total number of elements: 50000\n",
+      "The total number of dimensions: 3\n",
+      "The shape or number of elements per dimension: (5, 100, 100)\n",
+      "The maximum value of contained elements: 0.9999938022384103\n",
+      "The minimum value of contained elements: 1.1858020945165748e-05\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Properties of NumPy arrays.\n",
+    "print(''.join((\n",
+    "      'The data type for all elements: '                , str(a.dtype)    , NL ,\n",
+    "      'The size of each element in memory in bytes: '   , str(a.itemsize) , NL ,\n",
+    "      'The total number of elements: '                  , str(a.size)     , NL ,\n",
+    "      'The total number of dimensions: '                , str(a.ndim)     , NL ,\n",
+    "      'The shape or number of elements per dimension: ' , str(a.shape)    , NL ,\n",
+    "      'The maximum value of contained elements: '       , str(a.max())    , NL ,\n",
+    "      'The minimum value of contained elements: '       , str(a.min())    , NL )))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ce0320e0",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "## Indexing/Slicing to access elements"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "33b44931",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "Indexing and Slicing to access elements. Uses '0 indexing' meaning first element \n",
+    "of each dimension is referenced with number '0'. Negative numbers start at the \n",
+    "end of each dimension.\n",
+    "'''\n",
+    "\n",
+    "# Get a specific element using a[d1,d2,...,dn] notation.\n",
+    "print(''.join((\n",
+    "      'First element(s): ' , str((a[0,0,0], a[1,0,0], a[2,0,0]))       , NL ,\n",
+    "      'Last element(s):  ' , str((a[0,-1,-1], a[1,-1,-1], a[2,-1,-1])) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ca211829",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Get a specific 'row'. ':' used to select all elements of specified dimension.\n",
+    "print(''.join((\n",
+    "      'First row(s): \\n' , str(a[0,0,:])  , NL*ls ,\n",
+    "      'Last row(s):  \\n' , str(a[0,-1,:]) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1d031d71",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Get a specific 'column'.\n",
+    "print(''.join((\n",
+    "      'First column(s): \\n' , str(a[0,:,0])  , NL*ls ,\n",
+    "      'Last column(s):  \\n' , str(a[0,:,-1]) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6d4525f0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Get a specific 'table'.\n",
+    "print(''.join((\n",
+    "      'First table(s): \\n' , str(a[0,:,:])  , NL*ls ,\n",
+    "      'Last table(s):  \\n' , str(a[-1,:,:]) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "50ea9571",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Granular indexing or 'slicing' using \n",
+    "# a[d1=startindex:endindex:stepsize,d2,...,dn] notation.\n",
+    "print(''.join((\n",
+    "      'First row, every other element: \\n' , str(a[0,0,0:-1:2])  , NL*ls +\n",
+    "      'Last row, every other element:  \\n' , str(a[0,-1,0:-1:2]) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "82d4e7e2",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "## More Initialization Examples"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3c3c83f6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# More array initialization examples.\n",
+    "\n",
+    "# All elements initiated as zeros.\n",
+    "print(''.join(('All elements initiated as zeros: \\n' , str(np.zeros((N1,N1), dtype='int32')) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "225571f7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# All elements initiated as ones.\n",
+    "print(''.join(('All elements initiated as ones: \\n' , str(np.ones((N1,N1), dtype='int32')) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3ebea8fd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# All elements initiated as a specified value.\n",
+    "print(''.join((\n",
+    "      'All elements initiated as a specified value: \\n' , \n",
+    "      str(np.full((N1,N1), N2, dtype='float32')) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3c264b1e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# All elements initiated as a letter.\n",
+    "print(''.join((\n",
+    "      'All elements initiated as a letter: \\n' , str(np.full((N1,N1), 'a')) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7c21d2a0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Initialize an array using an exisiting array as an example.\n",
+    "print(''.join((\n",
+    "      'All elements initiated as a \\'full like\\' matrix: \\n' , \n",
+    "      str(np.full_like(a[0],N1)) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "22335706",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# 2D Identity Matrix.\n",
+    "print(''.join(('Initiated 2D Identity Matrix: \\n' , str(np.identity(N1)) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a710163c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "Repeating array. This is tricky due to the indexing required for proper\n",
+    "initialization. The second index for the array 'a' must be written as '0:1'\n",
+    "so that it returns a 2D array with shape (1,N3). This allows specification\n",
+    "of the axis that we want repeated as shown in the first example where 'axis=0'\n",
+    "is specified. If the indexing is written as '0' then a 1D array is returned with\n",
+    "shape '(N3,)' and does not allow row repetition, only element repetition as \n",
+    "shown in the following statement.\n",
+    "'''\n",
+    "print(''.join((\n",
+    "      'First row of array \\'a\\' repeated: \\n'          , str(np.repeat(a[0,0:1,:],N1,axis=0)) , NL*ls ,\n",
+    "      'First row elements of array \\'a\\' repeated: \\n' , str(np.repeat(a[0,0,:],N1))          , NL )))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9297390d",
+   "metadata": {},
+   "source": [
+    "## Example of Special Initialization using Indexing"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e7f79560",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Lets put our knowledge of array initialization to the test.\n",
+    "'''\n",
+    "We are going to create the following array with shape (N1,N1) from scratch:\n",
+    "[[1.,1.,1.,1.,1.]\n",
+    " [1.,0.,0.,0.,1.]\n",
+    " [1.,0.,9.,0.,1.]\n",
+    " [1.,0.,0.,0.,1.]\n",
+    " [1.,1.,1.,1.,1.]]\n",
+    "'''\n",
+    "\n",
+    "# Start with array full of ones.\n",
+    "testArray = np.ones((N1,N1), dtype='float32')\n",
+    "print(''.join(('Array \\'testArray\\': \\n' , str(testArray) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f59eecff",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Fill the inside with zeros.\n",
+    "testArray[1:N1-1,1:N1-1] = np.zeros((N1-2,N1-2), dtype='float32')\n",
+    "print(''.join(('Modified \\'testArray\\': \\n' , str(testArray) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "482ad2bb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Assign the middle value to 9 and we're done.\n",
+    "testArray[N1//2,N1//2] = 9.\n",
+    "print(''.join(('Final \\'testArrray\\': \\n' , str(testArray) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e3762f83",
+   "metadata": {
+    "tags": []
+   },
+   "source": [
+    "## Assignment is NOT copying"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7f2912bd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# This section shows the important distinction between assignment and proper\n",
+    "# initialization of a NumPy array or any variable for that matter.\n",
+    "\n",
+    "# Lets start by initializing an array as testA and assigning it to a different \n",
+    "# variable called testB.\n",
+    "\n",
+    "testA = np.zeros((N1,N1))\n",
+    "testB = testA\n",
+    "\n",
+    "print(''.join((\n",
+    "      'Array \\'testA\\': \\n' , str(testA) , NL*ls , \n",
+    "      'Array \\'testB\\': \\n' , str(testB) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d57aa034",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Alright. We now have two variables that point to an array. Lets try changing\n",
+    "# the values in the array that testB is assigned to.\n",
+    "testB[0,:] = N2\n",
+    "print(''.join((\n",
+    "      'First Test: Change value in \\'testB\\' and check result.' , NL*ls , \n",
+    "      'Array \\'testA\\': \\n' , str(testA) , NL*ls , \n",
+    "      'Array \\'testB\\': \\n' , str(testB) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "dc80a627",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "Oh. That is NOT good. Changing the values in testB is the same as changing \n",
+    "values in testA because they both point to the exact same array in memory. We \n",
+    "'assigned' testB to the array that was 'initialized' when defining testA. If we\n",
+    "want to make a proper 'copy' of the array that testA is assigned to then we need\n",
+    "to 'initialize' a new array using a property of numpy arrays called 'copy'.\n",
+    "'''\n",
+    "testA = np.zeros((N1,N1))\n",
+    "testB = testA.copy()\n",
+    "\n",
+    "# Now we have two initialized arrays that are identical in value but stored in \n",
+    "# separate memory locations. Changing one does not change the other.\n",
+    "testB[0,:] = N2\n",
+    "print(''.join((\n",
+    "      'Second Test: Change value in testB and check result.' , NL*ls , \n",
+    "      'Array testA: \\n' , str(testA) , NL*ls , \n",
+    "      'Array testB: \\n' , str(testB) , NL )))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5e8591c1",
+   "metadata": {},
+   "source": [
+    "## Advanced Indexing"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "90121501",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "NumPy arrays can be indexed using NumPy arrays or any list/tuple/etc. Wild stuff. \n",
+    "We can create useful NumPy arrays for indexing using boolean operators on an \n",
+    "array that determines whether each element in an array satisfies a given \n",
+    "condition. It initiates a boolean 'mask' that is an array with the same shape as \n",
+    "the original array and contains either a 'true' (1) or 'false' (0) value for every\n",
+    "element denoting whether the corresponding element from the original array \n",
+    "satisfied the given condition.\n",
+    "'''\n",
+    "\n",
+    "# Find every element in the array 'a' that has a value greater than a.max()/2\n",
+    "# This statement initiates a boolean mask array that takes a given condition\n",
+    "aMaskHalfMax = (a > (a.max()/2))\n",
+    "\n",
+    "print(''.join((\n",
+    "      'Find every element in the array \\'a\\' that has a value greater than a.max()/2. \\n' , \n",
+    "      'Initiate a boolean mask array using the statement: aMaskHalfMax = (a > (a.max()/2))', NL*ls , \n",
+    "      'aMaskHalfMax.shape: '    , str(aMaskHalfMax.shape) , NL    , \n",
+    "      'aMaskHalfMax.size:  '    , str(aMaskHalfMax.size)  , NL    , \n",
+    "      'aMaskHalfMax: \\n'        , str(aMaskHalfMax)       , NL*ls )))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ae4e2ed3-146f-4526-bdd4-9da3a263dc92",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Index array 'a' using the created mask.\n",
+    "\n",
+    "aIndexMaskHalfMax = a[aMaskHalfMax]\n",
+    "\n",
+    "print(''.join((\n",
+    "      'aIndexMaskHalfMax.shape: ' , str(aIndexMaskHalfMax.shape)   , NL , \n",
+    "      'aIndexMaskHalfMax.size:  ' , str(aIndexMaskHalfMax.size)    , NL , \n",
+    "      'aIndexMaskHalfMax: \\n'     , str(aIndexMaskHalfMax)         , NL)))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "11e7dbb7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "A very important nuance to note when using any form of indexing is that the \n",
+    "returned array is a 1D array containing the elements that satisfied the condition.\n",
+    "'''\n",
+    "\n",
+    "# Create a copy of the original array and a copy of the masked array.\n",
+    "aTest    = a.copy()\n",
+    "aTestMax = aIndexMaskHalfMax.copy()\n",
+    "print(''.join((\n",
+    "      'Copy of array \\'a\\': \\n'               , str(aTest)    , NL*ls ,\n",
+    "      'Copy of array \\'a[aMaskHalfMax]\\': \\n' , str(aTestMax) , NL)))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f5ddba3f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Turn the specified values to zero.\n",
+    "aTest[aMaskHalfMax] = 0\n",
+    "print(''.join((str(aTest) , NL)))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fd2801fd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Turn the specified values back to their original value.\n",
+    "aTest[aMaskHalfMax] = aTestMax\n",
+    "print(''.join(('Turn the specified values back to their original value.' , str(aTest) , NL)))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "edf48b57",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# The function np.any() will find whether a given condition is satisfied by ANY\n",
+    "# elements along the given axes. \n",
+    "\n",
+    "conditioN1  = a == a.max()\n",
+    "aAnyHalfMax = np.any(conditioN1, axis=(1,2))\n",
+    "print(''.join((\n",
+    "      'Do ANY elements of the tables in array \\'a\\' satisfy the given condition?' , NL ,\n",
+    "      'aAnyHalfMax: ' , str(aAnyHalfMax))))\n",
+    "print('This tells us that table 1 in array \\'a\\' contains the element with the maximum value.')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2a24843a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# The function np.all() will find whether a given condition is satisfied by ALL\n",
+    "# elements along the given axes.\n",
+    "\n",
+    "conditioN2   = a < a.max()\n",
+    "aAllInterval = np.all(conditioN2, axis=(1,2))\n",
+    "\n",
+    "print(''.join((\n",
+    "      'Do ALL elements of the tables in array \\'a\\' satisfy the given condition?' , NL , \n",
+    "      'aAllInterval: ' , str(aAllInterval) )))\n",
+    "print('This tells us that table 1 contains the element in array \\'a\\' with the maximum value.')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "07e125c3",
+   "metadata": {},
+   "source": [
+    "## Mathematical Operations over Array Elements"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7d968adb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "Now we will look at the arithmetic mathematical operations you can perform over \n",
+    "the elements of a NumPy array. All arithmetic operations are 'elementwise'\n",
+    "meaning they are applied to every element of the array individually.\n",
+    "'''\n",
+    "\n",
+    "# Initialize array for operations.\n",
+    "b = np.full((N1,N1),N1)\n",
+    "print(''.join(('Array b: \\n' , str(b) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e94a43c5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Addition\n",
+    "print(''.join(('Array b+' , str(N1) , ': \\n' , str(b+N1) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "da9ba3d2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Subtraction\n",
+    "print(''.join(('Array b-' , str(N1) , ': \\n' , str(b-N1) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "11a602cd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Multiplication\n",
+    "print(''.join(('Array b*' , str(N1) , ': \\n' , str(b*N1) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "81da9f73",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Division\n",
+    "print(''.join(('Array b/' , str(N1) , ': \\n' , str(b/N1) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "88101314",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Exponentiation (Respresented using the '**' symbol)\n",
+    "print(''.join(('Array b^2: \\n' , str(b**2) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5d095263",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# You can also apply functions.\n",
+    "print(''.join(('Array cos(b) \\n' , str(np.cos(b)) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8e5ed8df",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# What happens when we try to do arithmetic between two arrays?\n",
+    "# Initialize array c as a copy of b.\n",
+    "c = b.copy()\n",
+    "\n",
+    "# Addition\n",
+    "print(''.join(('Array b+c: \\n' , str(b)   , NL , '+' , NL \n",
+    "                      , str(c)   , NL , '=' , NL \n",
+    "                      , str(b+c) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b22f0f6b-071b-4adb-b400-5f5bd068731a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Subtraction\n",
+    "print(''.join(('Array b-c: \\n' , str(b)   , NL , '-' , NL \n",
+    "                      , str(c)   , NL , '=' , NL \n",
+    "                      , str(b-c) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "118b5015-1e99-48b4-9a94-04dca950aad0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Multiplication\n",
+    "print(''.join(('Array b*c: \\n' , str(b)   , NL , '*' , NL \n",
+    "                      , str(c)   , NL , '=' , NL \n",
+    "                      , str(b*c) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "165acb7f-3430-4175-a168-fc31be7c6092",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Division\n",
+    "print(''.join(('Array b/c: \\n' , str(b)   , NL , '/' , NL \n",
+    "                      , str(c)   , NL , '=' , NL \n",
+    "                      , str(b/c) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "529fc5e1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "Ok. It applied element by element arithmetic. Very useful to know. What happens \n",
+    "when we try to do arithmetic operations between two arrays that do not have the \n",
+    "same shape?\n",
+    "'''\n",
+    "\n",
+    "# This 'try except' sequence allows execution of code that produces an error.\n",
+    "# The statement underneath 'except:' prints the last error in the stack trace.\n",
+    "try:\n",
+    "    print(''.join(('Shape of array a: ' , str(a.shape) , NL +\n",
+    "          'Shape of array b: ' , str(b.shape) , NL)\n",
+    "    print(''.join(('Array a+b: \\n'      , str(a+b)     , NL)\n",
+    "except:\n",
+    "    traceback.print_exc()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "36e34e37",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "Ah. It did not like that. 'Operands could not be broadcast together with shapes \n",
+    "(N1,N2,N3) (N1,N1)'. This implies that the operations between arrays is known\n",
+    "as 'broadcasting' and that the shape of the arrays is important when performing \n",
+    "operations that utilize broadcasting. Broadcasting is the most important feature \n",
+    "of NumPy arrays, as we will find out. \n",
+    "'''"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4a654cb6",
+   "metadata": {},
+   "source": [
+    "## Broadcasting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5f53d597",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "'''\n",
+    "Source: NumPy Documentation\n",
+    "URL: https://numpy.org/doc/stable/user/basics.broadcasting.html\n",
+    "\n",
+    "Broadcasting defines the behavior of operations between arrays. Lets try to \n",
+    "learn a little more about broadcasting through further experimentation.\n",
+    "'''\n",
+    "c = np.ones((N1))\n",
+    "print(''.join(('Now we have array \\'b\\' with shape ' , str(b.shape) , NL , str(b) , NL +\n",
+    "      'And array \\'c\\' with shape '         , str(c.shape) , NL , str(c) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "860a6c22",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# What happens if we try to add these arrays together?\n",
+    "print(''.join(('Array b+c: \\n'       , str(b+c)         , NL +\n",
+    "      'Array (b+c).shape: ' , str((b+c).shape) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "40b5e019",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Looks like it worked. How? \n",
+    "# What happens if we only add the first row of b.\n",
+    "print(''.join(('Array b[0].shape: '     , str(b[0].shape)     , NL +\n",
+    "      'Array b[0]+c: '         , str(b[0]+c)         , NL +\n",
+    "      'Array (b[0]+c).shape: ' , str((b[0]+c).shape) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "dfdfd515",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# That worked as well.\n",
+    "# What about the first column of b?\n",
+    "print(''.join(('Array b[:,0].shape: '     , str(b[:,0].shape)     , NL +\n",
+    "      'Array b[:,0]+c: '         , str(b[:,0]+c)         , NL +\n",
+    "      'Array (b[:,0]+c).shape: ' , str((b[:,0]+c).shape) , NL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "002bf43f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Ok that worked too. \n",
+    "# This should allow us to infer what is happening when we add b+c."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bea84695",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
